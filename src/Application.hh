@@ -11,7 +11,7 @@ class Application {
     /**
     * HTTP GET Handler
     */
-    public function get($regex, \mixed $handler): \void
+    public function get(\string $regex, \mixed $handler): \void
     {
         $this->routes[] = new Routing\RegexRoute(array('GET'), $regex, $handler);
     }
@@ -19,7 +19,7 @@ class Application {
     /**
     * HTTP POST Handler
     */
-    public function post($regex, \mixed $handler): \void
+    public function post(\string $regex, \mixed $handler): \void
     {
         $this->routes[] = new Routing\RegexRoute(array('POST'), $regex, $handler);
     }
@@ -27,7 +27,7 @@ class Application {
     /**
     * HTTP PUT Handler
     */
-    public function put($regex, \mixed $handler): \void
+    public function put(\string $regex, \mixed $handler): \void
     {
         $this->routes[] = new Routing\RegexRoute(array('PUT'), $regex, $handler);
     }
@@ -35,7 +35,7 @@ class Application {
     /**
     * HTTP DELETE Handler
     */
-    public function delete($regex, \mixed $handler): \void
+    public function delete(\string $regex, \mixed $handler): \void
     {
         $this->routes[] = new Routing\RegexRoute(array('DELETE'), $regex, $handler);
     }
@@ -43,7 +43,7 @@ class Application {
     /**
     * HTTP OPTIONS Handler
     */
-    public function options($regex, \mixed $handler): \void
+    public function options(\string $regex, \mixed $handler): \void
     {
         $this->routes[] = new Routing\RegexRoute(array('OPTIONS'), $regex, $handler);
     }
@@ -51,7 +51,7 @@ class Application {
     /**
     * HTTP HEAD Handler
     */
-    public function head($regex, \mixed $handler): \void
+    public function head(\string $regex, \mixed $handler): \void
     {
         $this->routes[] = new Routing\RegexRoute(array('HEAD'), $regex, $handler);
     }
@@ -59,7 +59,7 @@ class Application {
     /**
     * HTTP TRACE Handler
     */
-    public function trace($regex, \mixed $handler): \void
+    public function trace(\string $regex, \mixed $handler): \void
     {
         $this->routes[] = new Routing\RegexRoute(array('TRACE'), $regex, $handler);
     }
@@ -67,7 +67,7 @@ class Application {
     /**
     * HTTP CONNECT Handler
     */
-    public function connect($regex, \mixed $handler): \void
+    public function connect(\string $regex, \mixed $handler): \void
     {
         $this->routes[] = new Routing\RegexRoute(array('CONNECT'), $regex, $handler);
     }
@@ -75,7 +75,7 @@ class Application {
     /**
     * Handler for other/multiple HTTP verbs
     */
-    public function handler(array<string> $methods, $regex, \mixed $handler): \void
+    public function handler(array<string> $methods, \string $regex, \mixed $handler): \void
     {
         $this->routes[] = new Routing\RegexRoute($methods, $regex, $handler);
     }
@@ -124,4 +124,3 @@ class Application {
         throw new \RuntimeException('Unexpected response from handler. Should be string or Response');
     }
 }
-
