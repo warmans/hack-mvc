@@ -1,37 +1,16 @@
 <?hh
-spl_autoload_register(function ($class) {
+require_once(__DIR__.'/../src/ClassLoader.hh');
 
-    // project-specific namespace prefix
-    $prefix = '';
-
-    // base directory for the namespace prefix
-    $base_dir = __DIR__ . '/../src/';
-    // does the class use the namespace prefix?
-    $len = strlen($prefix);
-    if (strncmp($prefix, $class, $len) !== 0) {
-        // no, move to the next registered autoloader
-        return;
-    }
-    
-    // get the relative class name
-    $relative_class = substr($class, $len);
-
-    // replace the namespace prefix with the base directory, replace namespace
-    // separators with directory separators in the relative class name, append
-    // with .php
-    $file = $base_dir . str_replace('\\', '/', $relative_class) . '.hh';
-    // if the file exists, require it
-    if (file_exists($file)) {
-        require $file;
-    }
-});
+$class_loader = new HackMvc\ClassLoader();
+$class_loader->addNamespace('HackMvc', __DIR__ . '/../src/');
+$class_loader->register();
 
 echo '<pre>';
 
-$globals = new \HackMvc\Php\Globals();
+$globals = new HackMvc\Php\Globals();
 $request = $globals->getHttpRequest();
 
-$sl = new HackMvc\Service\Locator();
+$sl = new \HackMvc\Service\Locator();
 
 //register a class-based controller
 $sl->registerFactory('controller.bar', function(\HackMvc\Service\Locator $sl) {
@@ -41,13 +20,28 @@ $sl->registerFactory('controller.bar', function(\HackMvc\Service\Locator $sl) {
 
 $app = new HackMvc\Application($sl);
 
-//closure
-$app->get('#/foo$#', function(HackMvc\Routing\RouteMatch $route_match, HackMvc\Service\Locator $service_locator) { 
-    return new \HackMvc\Http\Response(new \HackMvc\Http\Status(200), new \Map(array('x-some-header'=>'blah')), 'foo'); 
+//closure e.g. index.php/hello/world
+$app->get('#/hello(/(?<name>.+))?$#', function(HackMvc\Routing\RouteMatch $route_match, HackMvc\Service\Locator $service_locator) { 
+    
+    //get matches from URI
+    $matches = $route_match->getMatchedSubstrings();
+
+    //return a new response
+    return new \HackMvc\Http\Response(
+        new \HackMvc\Http\Status(200), 
+        new \Map(array('x-some-header'=>'blah')), 
+        'hello '.(isset($matches['name']) ? $matches['name'] : 'whoever')
+    ); 
 });
 
 //controller
-$app->get('#/bar$$#', array($sl->getService('controller.bar'), 'barAction'));
+$app->get('#/bar$$#', \Pair {'controller.bar', 'barAction'});
+
+//view
+$app->get('#/baz$#', function(HackMvc\Routing\RouteMatch $route_match, HackMvc\Service\Locator $service_locator) { 
+    //return a sting via a Php Template
+    return (string) new \HackMvc\View\PhpTemplate(__DIR__.'/view/example.phtml');
+});
 
 $response = $app->handle($request);
 $response->flush();
