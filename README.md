@@ -1,3 +1,3 @@
 # Hack MVC
 
-Silex-style microframework written in hack for the purposes of me learning Hack.
+Silex-style emicroframework written in hack for the purposes of me learning Hack.

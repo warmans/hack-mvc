@@ -28,9 +28,16 @@ spl_autoload_register(function ($class) {
 
 
 echo '<pre>';
+
 $globals = new \HackMvc\Php\Globals();
 $request = $globals->getHttpRequest();
 
-$app = new HackMvc\Application();
-$app->get('#.+#', function($matches) { return 'bar'; });
-echo $app->handle($request);
+$sl = new HackMvc\Service\Locator();
+$app = new HackMvc\Application($sl);
+
+$app->get('#.+#', function(HackMvc\Routing\RouteMatch $route_match, HackMvc\Service\Locator $service_locator) { 
+    return new \HackMvc\Http\Response(new \HackMvc\Http\Status(200), new \Map(array('x-some-header'=>'blah')), 'foo'); 
+});
+
+$response = $app->handle($request);
+$response->flush();
