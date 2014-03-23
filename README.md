@@ -20,7 +20,7 @@ $app->get('#^/foo$#', function(HackMvc\Routing\RouteMatch $route_match, HackMvc\
     return new \HackMvc\Http\Response(new \HackMvc\Http\Status(200), new \Map(array('x-some-header'=>'blah')), 'foo'); 
 });
 
-//use a service to handle the request
+//use a service to handle the request (service not registered see example/index.php)
 $app->get('#^/bar$#', array($sl->getService('controller.bar'), 'handle'));
 
 //get response
