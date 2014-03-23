@@ -3,7 +3,7 @@ namespace HackMvc\Http;
 
 class Uri {
 
-    private $components;
+    private array<\string, \string> $components;
     private Map $query;
 
     public function __construct(private \string $uri)
@@ -15,7 +15,7 @@ class Uri {
         $this->query = new \Map($query);
     }
 
-    public function getPath()
+    public function getPath(): \string
     {
         $matches = array();
         if (preg_match('#^([^\?]+)#', $this->uri, $matches)) {

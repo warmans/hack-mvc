@@ -9,7 +9,7 @@ class Request {
 	public function __construct(private \string $method, private Uri $uri, private \Map $headers)
 	{}
 
-	public function getMethod()
+	public function getMethod(): \string
 	{
 		return $this->method;
 	}
@@ -19,7 +19,7 @@ class Request {
 		return $this->uri;
 	}
 
-	public function setRawBody(\string $body)
+	public function setRawBody(\string $body): \void
 	{
 		$this->raw_body = $body;
 	}

@@ -6,7 +6,7 @@ class Locator
     private array<string, mixed> $factories = array();
     private array<sting, mixed> $services = array();
 
-	public function registerFactory(\string $name, callable $factory): void 
+	public function registerFactory(\string $name, callable $factory): \void 
     {
         if ($this->factoryExists($name)) {
             throw new \RuntimeException("Duplicate factory name was registered: $name");
@@ -14,7 +14,7 @@ class Locator
         $this->factories[$name] = $factory;
     }
 
-    public function registerService(\string $name, mixed $service): void
+    public function registerService(\string $name, mixed $service): \void
     {
         if ($this->serviceExists($name)) {
             throw new \RuntimeException("Duplicate service name was registered: $name");
@@ -22,7 +22,7 @@ class Locator
         $this->services[$name] = $service;
     }
 
-    public function getService(\string $name): mixed
+    public function getService(\string $name): \mixed
     {
         if (!$this->serviceExists($name)) {
             if ($this->factoryExists($name)) {
@@ -35,12 +35,12 @@ class Locator
         return $this->services[$name];
     }
 
-    public function serviceExists(\string $name): bool
+    public function serviceExists(\string $name): \bool
     {
         return array_key_exists($name, $this->services);
     }
 
-    public function factoryExists(\string $name): sbool
+    public function factoryExists(\string $name): \bool
     {
         return array_key_exists($name, $this->factories);
     }

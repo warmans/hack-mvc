@@ -60,7 +60,7 @@ class ClassLoader
      * 
      * @return void
      */
-    public function register(): void
+    public function register(): \void
     {
         spl_autoload_register(array($this, 'loadClass'));
     }
@@ -76,7 +76,7 @@ class ClassLoader
      * than last.
      * @return void
      */
-    public function addNamespace(\string $prefix, \string $base_dir, \bool $prepend = false): void
+    public function addNamespace(\string $prefix, \string $base_dir, \bool $prepend = false): \void
     {
         // normalize namespace prefix
         $prefix = trim($prefix, '\\') . '\\';

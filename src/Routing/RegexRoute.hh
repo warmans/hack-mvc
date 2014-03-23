@@ -4,7 +4,7 @@ use HackMvc\Http;
 
 class RegexRoute extends AbstractRoute
 {
-    public function match(Http\Request $request)
+    public function match(Http\Request $request): \mixed
     {
         foreach ($this->methods as $method) {
             $matches = array();

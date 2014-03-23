@@ -10,22 +10,22 @@ class Status {
         $this->message = $this->getMessageForCode($code);
     }
 
-    public function toString()
+    public function toString(): \string
     {
         return "HTTP/1.0 {$this->getCode()} {$this->getMessage()}";
     }
 
-    public function getCode(): int
+    public function getCode(): \int
     {
         return $this->code;
     }
 
-    public function getMessage(): string
+    public function getMessage(): \string
     {
         return $this->message;
     }
 
-    private function getMessageForCode(\int $code) : string 
+    private function getMessageForCode(\int $code) : \string 
     {
         $http_codes = array(
             100 => 'Continue',
