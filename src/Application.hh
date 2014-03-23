@@ -11,70 +11,79 @@ class Application {
     /**
     * HTTP GET Handler
     */
-    public function get($regex, \mixed $handler) {
+    public function get($regex, \mixed $handler): \void
+    {
         $this->routes[] = new Routing\RegexRoute(array('GET'), $regex, $handler);
     }
 
     /**
     * HTTP POST Handler
     */
-    public function post($regex, \mixed $handler) {
+    public function post($regex, \mixed $handler): \void
+    {
         $this->routes[] = new Routing\RegexRoute(array('POST'), $regex, $handler);
     }
 
     /**
     * HTTP PUT Handler
     */
-    public function put($regex, \mixed $handler) {
+    public function put($regex, \mixed $handler): \void
+    {
         $this->routes[] = new Routing\RegexRoute(array('PUT'), $regex, $handler);
     }
 
     /**
     * HTTP DELETE Handler
     */
-    public function delete($regex, \mixed $handler) {
+    public function delete($regex, \mixed $handler): \void
+    {
         $this->routes[] = new Routing\RegexRoute(array('DELETE'), $regex, $handler);
     }
 
     /**
     * HTTP OPTIONS Handler
     */
-    public function options($regex, \mixed $handler) {
+    public function options($regex, \mixed $handler): \void
+    {
         $this->routes[] = new Routing\RegexRoute(array('OPTIONS'), $regex, $handler);
     }
 
     /**
     * HTTP HEAD Handler
     */
-    public function head($regex, \mixed $handler) {
+    public function head($regex, \mixed $handler): \void
+    {
         $this->routes[] = new Routing\RegexRoute(array('HEAD'), $regex, $handler);
     }
 
     /**
     * HTTP TRACE Handler
     */
-    public function trace($regex, \mixed $handler) {
+    public function trace($regex, \mixed $handler): \void
+    {
         $this->routes[] = new Routing\RegexRoute(array('TRACE'), $regex, $handler);
     }
 
     /**
     * HTTP CONNECT Handler
     */
-    public function connect($regex, \mixed $handler) {
+    public function connect($regex, \mixed $handler): \void
+    {
         $this->routes[] = new Routing\RegexRoute(array('CONNECT'), $regex, $handler);
     }
 
     /**
     * Handler for other/multiple HTTP verbs
     */
-    public function handler(array<string> $methods, $regex, \mixed $handler) {
+    public function handler(array<string> $methods, $regex, \mixed $handler): \void
+    {
         $this->routes[] = new Routing\RegexRoute($methods, $regex, $handler);
     }
 
     /**
     * Handle a request
     */
-    public function handle(Http\Request $request) 
+    public function handle(Http\Request $request): \Http\Response
     {
         foreach ($this->routes as $route) {
             if ($match = $route->match($request)) {
@@ -87,7 +96,7 @@ class Application {
         return new Http\Response(new Http\Status(404), new \Map(), 'no routes matches');
     }
 
-    private function convertHandlerToCallable(\mixed $handler)
+    private function convertHandlerToCallable(\mixed $handler): callable
     {
         switch (true) {
             
@@ -101,7 +110,7 @@ class Application {
         throw new \RuntimeException('Unknown handler type');
     }
 
-    private function createResponse(\mixed $handler_response)
+    private function createResponse(\mixed $handler_response): \Http\Response
     {
         switch (true) {
             case $handler_response instanceof Http\Response:
@@ -115,3 +124,4 @@ class Application {
         throw new \RuntimeException('Unexpected response from handler. Should be string or Response');
     }
 }
+
