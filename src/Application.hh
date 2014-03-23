@@ -4,6 +4,7 @@ namespace HackMvc;
 class Application {
 
     private array<int, Routing\Route> $routes = array();
+    private array<int, \mixed> $before = array();
 
     public function __construct(private ?Service\Locator $service_locator)
     {}
@@ -34,6 +35,7 @@ class Application {
 
     /**
     * HTTP DELETE Handler
+    * Note this appears to not be supported by the built in HHVM server.
     */
     public function delete(\string $regex, \mixed $handler): \void
     {
@@ -42,6 +44,7 @@ class Application {
 
     /**
     * HTTP OPTIONS Handler
+    * Note this appears to not be supported by the built in HHVM server.
     */
     public function options(\string $regex, \mixed $handler): \void
     {
@@ -54,22 +57,6 @@ class Application {
     public function head(\string $regex, \mixed $handler): \void
     {
         $this->routes[] = new Routing\RegexRoute(array('HEAD'), $regex, $handler);
-    }
-
-    /**
-    * HTTP TRACE Handler
-    */
-    public function trace(\string $regex, \mixed $handler): \void
-    {
-        $this->routes[] = new Routing\RegexRoute(array('TRACE'), $regex, $handler);
-    }
-
-    /**
-    * HTTP CONNECT Handler
-    */
-    public function connect(\string $regex, \mixed $handler): \void
-    {
-        $this->routes[] = new Routing\RegexRoute(array('CONNECT'), $regex, $handler);
     }
 
     /**
@@ -87,6 +74,15 @@ class Application {
     {
         foreach ($this->routes as $route) {
             if ($match = $route->match($request)) {
+
+                //always execute a handler before an action e.g. check login and return a redirect on failure
+                foreach ($this->before as $before) {
+                    if ($before_response = call_user_func($this->convertHandlerToCallable($handler), $match, $this->service_locator)) {
+                        return $this->createResponse($before_response);
+                    }
+                }
+
+                //invoke handler
                 $handler = $match->getRoute()->getHandler();
                 return $this->createResponse(
                     call_user_func($this->convertHandlerToCallable($handler), $match, $this->service_locator)
@@ -94,6 +90,34 @@ class Application {
             }
         }
         return new Http\Response(new Http\Status(404), new \Map(), 'no routes matches');
+    }
+
+    /**
+    * Short hand Response creation
+    */
+    public function respond(\string $body, \int $status = 200, array $headers=array())
+    {
+        return new Http\Response(new Http\Status($status), new \Map($headers), $body); 
+    }
+
+    /**
+    * Create a JSON Response
+    */
+    public function json(array $data, \int $status = 200): Http\Response 
+    {
+        return new Http\Response(
+            new Http\Status($status), 
+            new \Map(array('Content-type'=>'application/json')),  
+            json_encode($data)
+        ); 
+    }
+
+    /**
+    * Register a pre-handle callable
+    */
+    public function before(\mixed $handler): \void 
+    {
+        $this->before[] = $handler;
     }
 
     private function convertHandlerToCallable(\mixed $handler): callable
