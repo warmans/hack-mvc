@@ -26,18 +26,28 @@ spl_autoload_register(function ($class) {
     }
 });
 
-
 echo '<pre>';
 
 $globals = new \HackMvc\Php\Globals();
 $request = $globals->getHttpRequest();
 
 $sl = new HackMvc\Service\Locator();
+
+//register a class-based controller
+$sl->registerFactory('controller.bar', function(\HackMvc\Service\Locator $sl) {
+    require_once(__DIR__.'/controller/MyController.hh');
+    return new \MyController();
+});
+
 $app = new HackMvc\Application($sl);
 
-$app->get('#.+#', function(HackMvc\Routing\RouteMatch $route_match, HackMvc\Service\Locator $service_locator) { 
+//closure
+$app->get('#/foo$#', function(HackMvc\Routing\RouteMatch $route_match, HackMvc\Service\Locator $service_locator) { 
     return new \HackMvc\Http\Response(new \HackMvc\Http\Status(200), new \Map(array('x-some-header'=>'blah')), 'foo'); 
 });
+
+//controller
+$app->get('#/bar$$#', array($sl->getService('controller.bar'), 'barAction'));
 
 $response = $app->handle($request);
 $response->flush();
