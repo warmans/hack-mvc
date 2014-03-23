@@ -5,8 +5,6 @@ $class_loader = new HackMvc\ClassLoader();
 $class_loader->addNamespace('HackMvc', __DIR__ . '/../src/');
 $class_loader->register();
 
-echo '<pre>';
-
 $globals = new HackMvc\Php\Globals();
 $request = $globals->getHttpRequest();
 
